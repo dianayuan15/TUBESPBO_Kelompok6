@@ -47,13 +47,17 @@ public class SettingView extends Div implements BeforeEnterObserver {
 
     private Upload gambar;
     private Image gambarPreview;
-    private TextField lastName;
+    private TextField tentang;
+    private TextField namaDokter;
+    private TextField lokasi;
     private TextField email;
-    private TextField phone;
-    private DatePicker dateOfBirth;
+    private TextField noTelp;
+
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
+
+    private final Button delete = new Button("Delete");
 
     private final BeanValidationBinder<Setting> binder;
 
@@ -85,10 +89,11 @@ public class SettingView extends Div implements BeforeEnterObserver {
                 });
         grid.addColumn(gambarRenderer).setHeader("Gambar").setWidth("96px").setFlexGrow(0);
 
-        grid.addColumn("lastName").setAutoWidth(true);
+        grid.addColumn("tentang").setAutoWidth(true);
+        grid.addColumn("namaDokter").setAutoWidth(true);
+        grid.addColumn("lokasi").setAutoWidth(true);
         grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("phone").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
+        grid.addColumn("noTelp").setAutoWidth(true);
         grid.setItems(query -> settingService.list(
                 PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
                 .stream());
@@ -122,18 +127,44 @@ public class SettingView extends Div implements BeforeEnterObserver {
             try {
                 if (this.setting == null) {
                     this.setting = new Setting();
+                    binder.writeBean(this.setting);
+                    settingService.update(this.setting);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data Berhasil Ditambah");
+                    UI.getCurrent().navigate(SettingView.class);
+                } else {
+                    binder.writeBean(this.setting);
+                    settingService.update(this.setting);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data Berhasil Diperbarui");
+                    UI.getCurrent().navigate(SettingView.class);
                 }
-                binder.writeBean(this.setting);
-                settingService.update(this.setting);
-                clearForm();
-                refreshGrid();
-                Notification.show("Data updated");
-                UI.getCurrent().navigate(SettingView.class);
+
             } catch (ObjectOptimisticLockingFailureException exception) {
                 Notification n = Notification.show(
-                        "Error updating the data. Somebody else has updated the record while you were making changes.");
+                        "Error updating the data.");
                 n.setPosition(Position.MIDDLE);
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
+            } catch (ValidationException validationException) {
+                Notification.show("Failed to update the data.");
+            }
+        });
+        delete.addClickListener(e -> {
+            try {
+                if (this.setting == null) {
+
+                    Notification.show("Belum ada data");
+
+                } else {
+                    binder.writeBean(this.setting);
+                    settingService.delete(this.setting.getId());
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data dihapus");
+                    UI.getCurrent().navigate(SettingView.class);
+                }
             } catch (ValidationException validationException) {
                 Notification.show("Failed to update the data. Check again that all values are valid");
             }
@@ -173,11 +204,12 @@ public class SettingView extends Div implements BeforeEnterObserver {
         gambar = new Upload();
         gambar.getStyle().set("box-sizing", "border-box");
         gambar.getElement().appendChild(gambarPreview.getElement());
-        lastName = new TextField("Last Name");
+        tentang = new TextField("Tentang");
+        namaDokter = new TextField("Nama Dokter");
+        lokasi = new TextField("Lokasi");
         email = new TextField("Email");
-        phone = new TextField("Phone");
-        dateOfBirth = new DatePicker("Date Of Birth");
-        formLayout.add(gambarLabel, gambar, lastName, email, phone, dateOfBirth);
+        noTelp = new TextField("noTelp");
+        formLayout.add(gambarLabel, gambar, tentang, namaDokter, lokasi, email, noTelp);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);
@@ -190,7 +222,8 @@ public class SettingView extends Div implements BeforeEnterObserver {
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        buttonLayout.add(save, delete, cancel);
         editorLayoutDiv.add(buttonLayout);
     }
 

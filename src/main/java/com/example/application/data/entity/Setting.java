@@ -12,11 +12,12 @@ public class Setting extends AbstractEntity {
     @Lob
     @Column(length = 1000000)
     private byte[] gambar;
-    private String lastName;
+    private String tentang;
+    private String namaDokter;
+    private String lokasi;
     @Email
     private String email;
-    private String phone;
-    private LocalDate dateOfBirth;
+    private String noTelp;
 
     public byte[] getGambar() {
         return gambar;
@@ -24,11 +25,23 @@ public class Setting extends AbstractEntity {
     public void setGambar(byte[] gambar) {
         this.gambar = gambar;
     }
-    public String getLastName() {
-        return lastName;
+    public String getTentang() {
+        return tentang;
     }
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setTentang(String tentang) {
+        this.tentang = tentang;
+    }
+    public String getNamaDokter() {
+        return namaDokter;
+    }
+    public void setNamaDokter(String namaDokter) {
+        this.namaDokter = namaDokter;
+    }
+    public String getLokasi() {
+        return lokasi;
+    }
+    public void setLokasi(String lokasi) {
+        this.lokasi = lokasi;
     }
     public String getEmail() {
         return email;
@@ -36,17 +49,11 @@ public class Setting extends AbstractEntity {
     public void setEmail(String email) {
         this.email = email;
     }
-    public String getPhone() {
-        return phone;
+    public String getNoTelp() {
+        return noTelp;
     }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setNoTelp(String noTelp) {
+        this.noTelp = noTelp;
     }
 
 }
