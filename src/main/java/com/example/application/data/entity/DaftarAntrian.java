@@ -28,10 +28,13 @@ public class DaftarAntrian extends AbstractEntity {
     public void setNmrTlpn(String nmrTlpn) {
         this.nmrTlpn = nmrTlpn;
     }
+
     public LocalDate getTanggalLahir() {
         return tanggalLahir;
     }
-    public void setTanggallahir(LocalDate tanggalLahir) { this.tanggalLahir = tanggalLahir;}
+    public void setTanggalLahir(LocalDate tanggalLahir) {
+        this.tanggalLahir = tanggalLahir;
+    }
     public String getJenisKelamin() {
         return jenisKelamin;
     }
