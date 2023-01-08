@@ -55,7 +55,7 @@ public class MainLayout extends AppLayout {
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
-        nav.addItem(new AppNavItem("Daftarantrian", DaftarantrianView.class, "la la-columns"));
+        nav.addItem(new AppNavItem("Daftarantrian", DaftarantrianView.class, "la la-clipboard-list "));
         nav.addItem(new AppNavItem("Verifikasi Antrian", VerifikasiView.class, "la la-columns"));
         nav.addItem(new AppNavItem("Akunadmin", AkunadminView.class, "la la-columns"));
         nav.addItem(new AppNavItem("Setting", SettingView.class, "la la-columns"));
