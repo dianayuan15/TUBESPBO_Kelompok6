@@ -36,7 +36,7 @@ import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
-@PageTitle("Akunadmin")
+@PageTitle("Akun Admin")
 @Route(value = "akunadmin/:akunAdminID?/:action?(edit)", layout = MainLayout.class)
 public class AkunadminView extends Div implements BeforeEnterObserver {
 
@@ -47,13 +47,15 @@ public class AkunadminView extends Div implements BeforeEnterObserver {
 
     private Upload gambar;
     private Image gambarPreview;
-    private TextField nik;
     private TextField nama;
     private TextField email;
-    private DatePicker date;
+    private TextField nomorTelepon;
+    private TextField jenisKelamin;
+    private TextField alamat;
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
+    private final Button delete = new Button("Delete");
 
     private final BeanValidationBinder<AkunAdmin> binder;
 
@@ -85,10 +87,11 @@ public class AkunadminView extends Div implements BeforeEnterObserver {
                 });
         grid.addColumn(gambarRenderer).setHeader("Gambar").setWidth("96px").setFlexGrow(0);
 
-        grid.addColumn("nik").setAutoWidth(true);
         grid.addColumn("nama").setAutoWidth(true);
         grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("date").setAutoWidth(true);
+        grid.addColumn("nomorTelepon").setAutoWidth(true);
+        grid.addColumn("jenisKelamin").setAutoWidth(true);
+        grid.addColumn("alamat").setAutoWidth(true);
         grid.setItems(query -> akunAdminService.list(
                 PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
                 .stream());
@@ -122,22 +125,50 @@ public class AkunadminView extends Div implements BeforeEnterObserver {
             try {
                 if (this.akunAdmin == null) {
                     this.akunAdmin = new AkunAdmin();
+                    binder.writeBean(this.akunAdmin);
+                    akunAdminService.update(this.akunAdmin);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data telah ditambahkan");
+                    UI.getCurrent().navigate(AkunadminView.class);
+                }else{
+                    binder.writeBean(this.akunAdmin);
+                    akunAdminService.update(this.akunAdmin);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data telah diperbaharui");
+                    UI.getCurrent().navigate(AkunadminView.class);
                 }
-                binder.writeBean(this.akunAdmin);
-                akunAdminService.update(this.akunAdmin);
-                clearForm();
-                refreshGrid();
-                Notification.show("Data updated");
-                UI.getCurrent().navigate(AkunadminView.class);
+
             } catch (ObjectOptimisticLockingFailureException exception) {
                 Notification n = Notification.show(
-                        "Error updating the data. Somebody else has updated the record while you were making changes.");
+                        "Gagal memperbarui data");
                 n.setPosition(Position.MIDDLE);
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
             } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
+                Notification.show("Gagal memperbarui data");
             }
         });
+        delete.addClickListener(e -> {
+            try {
+                if (this.akunAdmin == null) {
+
+                    Notification.show("Data belum ada");
+
+                }else{
+                    binder.writeBean(this.akunAdmin);
+                    akunAdminService.delete(this.akunAdmin.getId());
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data telah dihapus");
+                    UI.getCurrent().navigate(AkunadminView.class);
+                }
+
+            } catch (ValidationException validationException) {
+                Notification.show("Gagal menghapus data");
+            }
+        });
+
     }
 
     @Override
@@ -173,11 +204,12 @@ public class AkunadminView extends Div implements BeforeEnterObserver {
         gambar = new Upload();
         gambar.getStyle().set("box-sizing", "border-box");
         gambar.getElement().appendChild(gambarPreview.getElement());
-        nik = new TextField("Nik");
         nama = new TextField("Nama");
         email = new TextField("Email");
-        date = new DatePicker("Date");
-        formLayout.add(gambarLabel, gambar, nik, nama, email, date);
+        nomorTelepon = new TextField("Nomor Telepon");
+        jenisKelamin = new TextField("Jenis Kelamin");
+        alamat = new TextField("Alamat");
+        formLayout.add(gambarLabel, gambar, nama, email, nomorTelepon, jenisKelamin, alamat);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);
@@ -190,7 +222,8 @@ public class AkunadminView extends Div implements BeforeEnterObserver {
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        buttonLayout.add(save, cancel, delete);
         editorLayoutDiv.add(buttonLayout);
     }
 
