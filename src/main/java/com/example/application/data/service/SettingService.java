@@ -12,9 +12,11 @@ public class SettingService {
 
     private final SettingRepository repository;
 
+
     public SettingService(SettingRepository repository) {
         this.repository = repository;
     }
+
 
     public Optional<Setting> get(Long id) {
         return repository.findById(id);
@@ -23,6 +25,7 @@ public class SettingService {
     public Setting update(Setting entity) {
         return repository.save(entity);
     }
+
 
     public void delete(Long id) {
         repository.deleteById(id);
