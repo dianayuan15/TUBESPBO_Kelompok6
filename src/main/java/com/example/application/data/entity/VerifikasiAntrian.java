@@ -6,28 +6,40 @@ import javax.validation.constraints.Email;
 @Entity
 public class VerifikasiAntrian extends AbstractEntity {
 
-    private String firstName;
-    private String lastName;
-    @Email
-    private String email;
-
-    public String getFirstName() {
-        return firstName;
+    private String nik;
+    private String nama;
+    private String keluhan;
+    private String diagnosa;
+    private String dosisObat;
+    public String getNik() {
+        return nik;
     }
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setNik(String nik) {
+        this.nik = nik;
     }
-    public String getLastName() {
-        return lastName;
+    public String getNama() {
+        return nama;
     }
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setNama(String nama) {
+        this.nama = nama;
     }
-    public String getEmail() {
-        return email;
+    public String getKeluhan() {
+        return keluhan;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setKeluhan(String keluhan) {
+        this.keluhan = keluhan;
+    }
+    public String getDiagnosa() {
+        return diagnosa;
+    }
+    public void setDiagnosa(String diagnosa) {
+        this.diagnosa = diagnosa;
+    }
+    public String getDosisObat() {
+        return dosisObat;
+    }
+    public void setDosisObat(String dosisObat) {
+        this.dosisObat = dosisObat;
     }
 
 }

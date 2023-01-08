@@ -27,7 +27,7 @@ import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
-@PageTitle("Verifikasi")
+@PageTitle("Verifikasi Antrian")
 @Route(value = "verifikasi/:verifikasiAntrianID?/:action?(edit)", layout = MainLayout.class)
 public class VerifikasiView extends Div implements BeforeEnterObserver {
 
@@ -36,13 +36,15 @@ public class VerifikasiView extends Div implements BeforeEnterObserver {
 
     private final Grid<VerifikasiAntrian> grid = new Grid<>(VerifikasiAntrian.class, false);
 
-    private TextField firstName;
-    private TextField lastName;
-    private TextField email;
+    private TextField nik;
+    private TextField nama;
+    private TextField keluhan;
+    private TextField diagnosa;
+    private TextField dosisObat;
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
-
+    private final Button delete = new Button("Delete");
     private final BeanValidationBinder<VerifikasiAntrian> binder;
 
     private VerifikasiAntrian verifikasiAntrian;
@@ -62,9 +64,11 @@ public class VerifikasiView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("email").setAutoWidth(true);
+        grid.addColumn("nik").setAutoWidth(true);
+        grid.addColumn("nama").setAutoWidth(true);
+        grid.addColumn("keluhan").setAutoWidth(true);
+        grid.addColumn("diagnosa").setAutoWidth(true);
+        grid.addColumn("dosisObat").setAutoWidth(true);
         grid.setItems(query -> verifikasiAntrianService.list(
                 PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
                 .stream());
@@ -97,20 +101,47 @@ public class VerifikasiView extends Div implements BeforeEnterObserver {
             try {
                 if (this.verifikasiAntrian == null) {
                     this.verifikasiAntrian = new VerifikasiAntrian();
+                    binder.writeBean(this.verifikasiAntrian);
+                    verifikasiAntrianService.update(this.verifikasiAntrian);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data telah terverifikasi");
+                    UI.getCurrent().navigate(VerifikasiView.class);
+                } else {
+                    binder.writeBean(this.verifikasiAntrian);
+                    verifikasiAntrianService.update(this.verifikasiAntrian);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data telah diperbarui");
+                    UI.getCurrent().navigate(VerifikasiView.class);
                 }
-                binder.writeBean(this.verifikasiAntrian);
-                verifikasiAntrianService.update(this.verifikasiAntrian);
-                clearForm();
-                refreshGrid();
-                Notification.show("Data updated");
-                UI.getCurrent().navigate(VerifikasiView.class);
             } catch (ObjectOptimisticLockingFailureException exception) {
                 Notification n = Notification.show(
-                        "Error updating the data. Somebody else has updated the record while you were making changes.");
+                        "Error updating the data.");
                 n.setPosition(Position.MIDDLE);
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
             } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
+                Notification.show("Failed to update the data.");
+            }
+        });
+
+        delete.addClickListener(e -> {
+            try {
+                if (this.verifikasiAntrian == null) {
+
+                    Notification.show("Belum ada data");
+
+                } else {
+                    binder.writeBean(this.verifikasiAntrian);
+                    verifikasiAntrianService.delete(this.verifikasiAntrian.getId());
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data telah terhapus");
+                    UI.getCurrent().navigate(VerifikasiView.class);
+                }
+
+            } catch (ValidationException validationException) {
+                Notification.show("Sebuah pengecualian terjadi saat mencoba menyimpan detail verifikasi antrian");
             }
         });
     }
@@ -143,10 +174,12 @@ public class VerifikasiView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        firstName = new TextField("First Name");
-        lastName = new TextField("Last Name");
-        email = new TextField("Email");
-        formLayout.add(firstName, lastName, email);
+        nik = new TextField("NIK");
+        nama = new TextField("Nama");
+        keluhan = new TextField("Keluhan");
+        diagnosa = new TextField("Diagnosa");
+        dosisObat = new TextField("Dosis Obat");
+        formLayout.add(nik, nama, keluhan, diagnosa, dosisObat);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);
@@ -159,7 +192,8 @@ public class VerifikasiView extends Div implements BeforeEnterObserver {
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        buttonLayout.add(save, delete, cancel);
         editorLayoutDiv.add(buttonLayout);
     }
 

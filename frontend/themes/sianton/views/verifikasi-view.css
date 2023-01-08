@@ -16,7 +16,7 @@
 .verifikasi-view .editor-layout {
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 500px;
 }
 
 .verifikasi-view .editor {
