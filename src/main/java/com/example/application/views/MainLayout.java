@@ -57,7 +57,7 @@ public class MainLayout extends AppLayout {
 
         nav.addItem(new AppNavItem("Daftarantrian", DaftarantrianView.class, "la la-columns"));
         nav.addItem(new AppNavItem("Verifikasi Antrian", VerifikasiView.class, "la la-columns"));
-        nav.addItem(new AppNavItem("Akunadmin", AkunadminView.class, "la la-columns"));
+        nav.addItem(new AppNavItem("Akun Admin", AkunadminView.class, "la la-user-plus"));
         nav.addItem(new AppNavItem("Setting", SettingView.class, "la la-columns"));
 
         return nav;

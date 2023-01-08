@@ -12,23 +12,19 @@ public class AkunAdmin extends AbstractEntity {
     @Lob
     @Column(length = 1000000)
     private byte[] gambar;
-    private String nik;
     private String nama;
     @Email
     private String email;
-    private LocalDate date;
+
+    private String nomorTelepon;
+    private String jenisKelamin;
+    private String alamat;
 
     public byte[] getGambar() {
         return gambar;
     }
     public void setGambar(byte[] gambar) {
         this.gambar = gambar;
-    }
-    public String getNik() {
-        return nik;
-    }
-    public void setNik(String nik) {
-        this.nik = nik;
     }
     public String getNama() {
         return nama;
@@ -39,14 +35,20 @@ public class AkunAdmin extends AbstractEntity {
     public String getEmail() {
         return email;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String email) { this.email = email; }
+    public String getNomorTelepon() {return nomorTelepon;}
+    public void setNomorTelepon(String nomorTelepon) {
+        this.nomorTelepon = nomorTelepon;
     }
-    public LocalDate getDate() {
-        return date;
+    public String getJenisKelamin() {
+        return jenisKelamin;
     }
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setJenisKelamin(String jenisKelamin) {
+        this.jenisKelamin = jenisKelamin;
+    }
+    public String getAlamat() {return alamat; }
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
     }
 
 }
