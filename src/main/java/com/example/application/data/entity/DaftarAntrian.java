@@ -7,49 +7,48 @@ import javax.validation.constraints.Email;
 @Entity
 public class DaftarAntrian extends AbstractEntity {
 
-    private String firstName;
-    private String lastName;
-    @Email
-    private String email;
-    private String phone;
-    private LocalDate dateOfBirth;
-    private String jk;
-
-    public String getFirstName() {
-        return firstName;
+    private String nik;
+    private String nama;
+    private String nmrTlpn;
+    private LocalDate tanggalLahir;
+    private String jenisKelamin;
+    private String alamat;
+    private String keluhan;
+    public String getNik() {
+        return nik;
     }
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setNik(String Nik) {
+        this.nik = nik;
     }
-    public String getLastName() {
-        return lastName;
+    public String getNama() {return nama;}
+    public void setNama(String nama) {
+        this.nama = nama;
     }
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public String getNmrTlpn() {return nmrTlpn;}
+    public void setNmrTlpn(String nmrTlpn) {
+        this.nmrTlpn = nmrTlpn;
     }
-    public String getEmail() {
-        return email;
+    public LocalDate getTanggalLahir() {
+        return tanggalLahir;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setTanggallahir(LocalDate tanggalLahir) { this.tanggalLahir = tanggalLahir;}
+    public String getJenisKelamin() {
+        return jenisKelamin;
     }
-    public String getPhone() {
-        return phone;
+    public void setJenisKelamin(String jenisKelamin) {
+        this.jenisKelamin = jenisKelamin;
     }
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public String getAlamat() {
+        return alamat;
     }
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
     }
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public String getKeluhan() {
+        return keluhan;
     }
-    public String getJk() {
-        return jk;
-    }
-    public void setJk(String jk) {
-        this.jk = jk;
+    public void setkeluhan(String keluhan) {
+        this.keluhan = keluhan;
     }
 
 }
