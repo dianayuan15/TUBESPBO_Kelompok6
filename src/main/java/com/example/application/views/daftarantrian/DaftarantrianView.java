@@ -29,7 +29,7 @@ import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
-@PageTitle("Daftarantrian")
+@PageTitle("Daftar Antrian")
 @Route(value = "daftarantrian/:daftarAntrianID?/:action?(edit)", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 public class DaftarantrianView extends Div implements BeforeEnterObserver {
@@ -39,16 +39,17 @@ public class DaftarantrianView extends Div implements BeforeEnterObserver {
 
     private final Grid<DaftarAntrian> grid = new Grid<>(DaftarAntrian.class, false);
 
-    private TextField firstName;
-    private TextField lastName;
-    private TextField email;
-    private TextField phone;
-    private DatePicker dateOfBirth;
-    private TextField jk;
+    private TextField nik;
+    private TextField nama;
+    private TextField nmrTlpn;
+    private DatePicker tanggalLahir;
+    private TextField jenisKelamin;
+    private TextField alamat;
+    private TextField keluhan;
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
-
+    private final Button delete = new Button("Delete");
     private final BeanValidationBinder<DaftarAntrian> binder;
 
     private DaftarAntrian daftarAntrian;
@@ -68,12 +69,13 @@ public class DaftarantrianView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("phone").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
-        grid.addColumn("jk").setAutoWidth(true);
+        grid.addColumn("nik").setAutoWidth(true);
+        grid.addColumn("nama").setAutoWidth(true);
+        grid.addColumn("nmrTlpn").setAutoWidth(true);
+        grid.addColumn("tanggalLahir").setAutoWidth(true);
+        grid.addColumn("jenisKelamin").setAutoWidth(true);
+        grid.addColumn("alamat").setAutoWidth(true);
+        grid.addColumn("keluhan").setAutoWidth(true);
         grid.setItems(query -> daftarAntrianService.list(
                 PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
                 .stream());
@@ -105,23 +107,52 @@ public class DaftarantrianView extends Div implements BeforeEnterObserver {
             try {
                 if (this.daftarAntrian == null) {
                     this.daftarAntrian = new DaftarAntrian();
+                    binder.writeBean(this.daftarAntrian);
+                    daftarAntrianService.update(this.daftarAntrian);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data Berhasil Ditambah");
+                    UI.getCurrent().navigate(DaftarantrianView.class);
+                } else{
+                    binder.writeBean(this.daftarAntrian);
+                    daftarAntrianService.update(this.daftarAntrian);
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data Berhasil Diperbarui");
+                    UI.getCurrent().navigate(DaftarantrianView.class);
                 }
-                binder.writeBean(this.daftarAntrian);
-                daftarAntrianService.update(this.daftarAntrian);
-                clearForm();
-                refreshGrid();
-                Notification.show("Data updated");
-                UI.getCurrent().navigate(DaftarantrianView.class);
+
             } catch (ObjectOptimisticLockingFailureException exception) {
                 Notification n = Notification.show(
-                        "Error updating the data. Somebody else has updated the record while you were making changes.");
+                        "Error updating the data.");
                 n.setPosition(Position.MIDDLE);
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
             } catch (ValidationException validationException) {
-                Notification.show("Failed to update the data. Check again that all values are valid");
+                Notification.show("Failed to update the data.");
+            }
+        });
+        delete.addClickListener(e -> {
+            try {
+                if (this.daftarAntrian == null) {
+
+                    Notification.show("Belum ada data");
+
+                } else{
+                    binder.writeBean(this.daftarAntrian);
+                    daftarAntrianService.delete(this.daftarAntrian.getId());
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Data telah terhapus");
+                    UI.getCurrent().navigate(DaftarantrianView.class);
+                }
+
+
+            } catch (ValidationException validationException) {
+                Notification.show("sebuah pengecualian terjadi saat mencoba menyimpan detail daftar antrian.");
             }
         });
     }
+
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -151,13 +182,14 @@ public class DaftarantrianView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        firstName = new TextField("First Name");
-        lastName = new TextField("Last Name");
-        email = new TextField("Email");
-        phone = new TextField("Phone");
-        dateOfBirth = new DatePicker("Date Of Birth");
-        jk = new TextField("Jk");
-        formLayout.add(firstName, lastName, email, phone, dateOfBirth, jk);
+        nik = new TextField("nik");
+        nama = new TextField("nama");
+        nmrTlpn = new TextField("nmrTlpn");
+        tanggalLahir = new DatePicker("tanggalLahir");
+        jenisKelamin = new TextField("jenisKelamin");
+        alamat = new TextField("alamat");
+        keluhan = new TextField("keluhan");
+        formLayout.add(nik, nama, nmrTlpn, tanggalLahir,jenisKelamin, alamat, keluhan);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);
@@ -170,7 +202,8 @@ public class DaftarantrianView extends Div implements BeforeEnterObserver {
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        buttonLayout.add(save, cancel, delete);
         editorLayoutDiv.add(buttonLayout);
     }
 
